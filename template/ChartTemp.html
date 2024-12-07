@@ -1,10 +1,109 @@
+{% extends 'base.html' %}
+{% block i %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    {% load static %}
     <meta charset="UTF-8">
     <title>Title</title>
+    <link rel="stylesheet" href="{% static 'css/Chart.css' %}">
 </head>
 <body>
+
+<div class="graphique">
+    <div class="navb">
+        <button id="aujourdhui-link">Historique d'Aujourd'hui</button>
+        <button id="semaine-link">Historique de cette semaine</button>
+        <button id="mois-link">Historique de ce mois</button>
+    </div>
+    <div class="graphique-temp">
+        <canvas id="graphique-temp" height="220"></canvas>
+    </div>
+    <div class="graphique-hum">
+        <canvas id="graphique-hum" height="220"></canvas>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.3/dist/Chart.min.js"></script>
+<script>
+    // Fonction pour créer un graphique
+    function createChart(canvasId, labels, dataValues, label, borderColor, callbackY) {
+        var ctx = document.getElementById(canvasId).getContext('2d');
+        new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: labels,
+                datasets: [{
+                    label: label,
+                    data: dataValues,
+                    backgroundColor: 'white',
+                    borderColor: borderColor,
+                    borderWidth: 2,
+                    pointStyle: 'circle',
+                    pointRadius: 2,
+                    pointBorderColor: borderColor
+                }]
+            },
+            options: {
+                scales: {
+                    yAxes: [{
+                        ticks: {
+                            beginAtZero: true,
+                            callback: callbackY
+                        }
+                    }],
+                    xAxes: [{
+                        type: 'time',
+                        time: {
+                            unit: 'hour',
+                            displayFormats: {
+                                hour: 'HH:mm'
+                            }
+                        },
+                        ticks: {
+                            autoSkip: true,
+                            maxRotation: 45,
+                            minRotation: 0
+                        }
+                    }]
+                }
+            }
+        });
+    }
+
+    // Récupération et affichage des données
+    function fetchDataAndRender(url, canvasIdTemp, canvasIdHum) {
+        fetch(url)
+            .then(response => response.json())
+            .then(data => {
+                const labels = data.temps.slice(-27); // Derniers 27 points
+                const tempValues = data.temperature.slice(-27);
+                const humValues = data.humidity.slice(-27);
+
+                createChart(canvasIdTemp, labels, tempValues, 'La valeur de Température', 'rgb(255, 0, 0)', value => value + '°');
+                createChart(canvasIdHum, labels, humValues, 'La valeur de Humidité', 'rgb(0, 0, 255)', value => value + '%');
+            });
+    }
+
+    // Écouteurs pour les boutons
+    document.getElementById('aujourdhui-link').addEventListener('click', () => {
+        fetchDataAndRender('/chart-data-jour/', 'graphique-temp', 'graphique-hum');
+    });
+
+    document.getElementById('semaine-link').addEventListener('click', () => {
+        fetchDataAndRender('/chart-data-semaine/', 'graphique-temp', 'graphique-hum');
+    });
+
+    document.getElementById('mois-link').addEventListener('click', () => {
+        fetchDataAndRender('/chart-data-mois/', 'graphique-temp', 'graphique-hum');
+    });
+
+    // Chargement initial
+    fetchDataAndRender('/chart-data/', 'graphique-temp', 'graphique-hum');
+</script>
+
+{% endblock %}
+
 
 </body>
 </html>

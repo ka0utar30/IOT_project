@@ -1,10 +1,125 @@
+{% extends 'base.html' %}
+{% block content %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    {% load static %}
     <meta charset="UTF-8">
     <title>Title</title>
+    <link rel="stylesheet" href="{% static 'css/Chart.css' %}">
 </head>
 <body>
+
+    <div class="graphique">
+        <div class="navb">
+            <button class="btn-chart" id="aujourdhui-link">Historique d'Aujourd'hui</button>
+            <button class="btn-chart" id="semaine-link">Historique de cette semaine</button>
+            <button class="btn-chart" id="mois-link">Historique de ce mois</button>
+        <!-- <button class="btn-chart" id="csv">Télécharger CSV</button> -->
+        </div>
+        <div class="graphique-hum">
+        <canvas id="graphique-hum" height="220"></canvas>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.3/dist/Chart.min.js"></script>
+    <script>
+        // Initialisation d'une variable pour stocker l'instance du graphique
+        let myChart = null;
+
+        // Fonction pour créer un graphique avec des données spécifiques
+        function createChart(url, borderWidth) {
+            fetch(url)
+                .then(response => response.json())
+                .then(data => {
+                    // Récupération des données
+                    const labels = data.temps.slice(-27); // Dernières 27 valeurs
+                    const dataValues = data.humidity.slice(-27);
+
+                    // Suppression du graphique précédent s'il existe
+                    if (myChart) {
+                        myChart.destroy();
+                    }
+
+                    // Création d'un nouveau graphique
+                    const ctx = document.getElementById('graphique-hum').getContext('2d');
+                    myChart = new Chart(ctx, {
+                        type: 'line',
+                        data: {
+                            labels: labels,
+                            datasets: [{
+                                label: 'Humidité (%)',
+                                data: dataValues,
+                                backgroundColor: 'rgba(0, 0, 255, 0.1)',
+                                borderColor: 'rgb(0, 0, 255)',
+                                borderWidth: borderWidth,
+                                pointStyle: 'circle',
+                                pointRadius: 3,
+                                pointBorderColor: 'black',
+                                pointBackgroundColor: 'white'
+                            }]
+                        },
+                        options: {
+                            responsive: true,
+                            maintainAspectRatio: false,
+                            scales: {
+                                yAxes: [{
+                                    ticks: {
+                                        beginAtZero: true,
+                                        min: 0,
+                                        max: 80,
+                                        callback: function(value) {
+                                            return value + '%'; // Affiche "%" sur l'axe des y
+                                        }
+                                    },
+                                    gridLines: {
+                                        color: 'rgba(200, 200, 200, 0.2)'
+                                    }
+                                }],
+                                xAxes: [{
+                                    ticks: {
+                                        autoSkip: true,
+                                        maxTicksLimit: 20,
+                                    },
+                                    gridLines: {
+                                        display: false
+                                    }
+                                }]
+                            },
+                            legend: {
+                                display: true,
+                                position: 'top'
+                            },
+                            tooltips: {
+                                enabled: true,
+                                mode: 'index',
+                                intersect: false
+                            }
+                        }
+                    });
+                })
+                .catch(error => console.error('Erreur lors du chargement des données :', error));
+        }
+
+        // Écouteurs d'événements pour les boutons
+        document.getElementById('aujourdhui-link').addEventListener('click', () => {
+            createChart('/chart-data-jour/', 1);
+        });
+
+        document.getElementById('semaine-link').addEventListener('click', () => {
+            createChart('/chart-data-semaine/', 2);
+        });
+
+        document.getElementById('mois-link').addEventListener('click', () => {
+            createChart('/chart-data-mois/', 3);
+        });
+
+        // Charge initiale du graphique avec /chart-data/
+        createChart('/chart-data/', 4);
+    </script>
+
+    {% endblock %}
+
 
 </body>
 </html>

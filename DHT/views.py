@@ -36,3 +36,89 @@ def download_csv(request):
         writer.writerow(row)
     return response
 
+#pour afficher navbar de template
+def index_view(request):
+    return render(request, 'index.html')
+
+#pour afficher les graphes
+def graphique(request):
+    return render(request, 'Chart.html')
+
+
+# récupérer toutes les valeur de température et humidity sous forme un #fichier json
+def chart_data(request):
+    dht = Dht11.objects.all()
+
+    data = {
+        'temps': [Dt.dt for Dt in dht],
+        'temperature': [Temp.temp for Temp in dht],
+        'humidity': [Hum.hum for Hum in dht]
+    }
+    return JsonResponse(data)
+
+
+# pour récupérer les valeurs de température et humidité de dernier 24h
+# et envoie sous forme JSON
+def chart_data_jour(request):
+    dht = Dht11.objects.all()
+    now = timezone.now()
+
+    # Récupérer l'heure il y a 24 heures
+    last_24_hours = now - timezone.timedelta(hours=24)
+
+    # Récupérer tous les objets de Module créés au cours des 24 dernières heures
+    dht = Dht11.objects.filter(dt__range=(last_24_hours, now))
+    data = {
+        'temps': [Dt.dt for Dt in dht],
+        'temperature': [Temp.temp for Temp in dht],
+        'humidity': [Hum.hum for Hum in dht]
+    }
+    return JsonResponse(data)
+
+
+#pour récupérer les valeurs de température et humidité de dernier semaine
+# et envoie sous forme JSON
+def chart_data_semaine(request):
+    dht = Dht11.objects.all()
+    # calcul de la date de début de la semaine dernière
+    date_debut_semaine = timezone.now().date() - datetime.timedelta(days=7)
+    print(datetime.timedelta(days=7))
+    print(date_debut_semaine)
+
+    # filtrer les enregistrements créés depuis le début de la semaine dernière
+    dht = Dht11.objects.filter(dt__gte=date_debut_semaine)
+    data = {
+        'temps': [Dt.dt for Dt in dht],
+        'temperature': [Temp.temp for Temp in dht],
+        'humidity': [Hum.hum for Hum in dht]
+    }
+    return JsonResponse(data)
+
+
+# pour récupérer les valeurs de température et humidité de dernier moins
+# et envoie sous forme JSON
+def chart_data_mois(request):
+    dht = Dht11.objects.all()
+
+    date_debut_semaine = timezone.now().date() - datetime.timedelta(days=30)
+    print(datetime.timedelta(days=30))
+    print(date_debut_semaine)
+
+    # filtrer les enregistrements créés depuis le début de la semaine dernière
+    dht = Dht11.objects.filter(dt__gte=date_debut_semaine)
+
+    data = {
+        'temps': [Dt.dt for Dt in dht],
+        'temperature': [Temp.temp for Temp in dht],
+        'humidity': [Hum.hum for Hum in dht]
+    }
+    return JsonResponse(data)
+
+def home(request):
+    return render(request, 'home.html')
+
+def my_chart_temp_view(request):
+    return render(request, 'ChartTemp.html')
+
+def my_chart_hum_view(request):
+    return render(request, 'ChartHum.html')
