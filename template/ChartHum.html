@@ -1,125 +1,96 @@
-{% extends 'base.html' %}
-{% block content %}
-<!DOCTYPE html>
+{% extends 'navbar.html' %}
+{% load static %}
+
+{% block index %}
 <html lang="en">
 <head>
-    {% load static %}
-    <meta charset="UTF-8">
-    <title>Title</title>
-    <link rel="stylesheet" href="{% static 'css/Chart.css' %}">
-</head>
-<body>
-
-    <div class="graphique">
-        <div class="navb">
-            <button class="btn-chart" id="aujourdhui-link">Historique d'Aujourd'hui</button>
-            <button class="btn-chart" id="semaine-link">Historique de cette semaine</button>
-            <button class="btn-chart" id="mois-link">Historique de ce mois</button>
-        <!-- <button class="btn-chart" id="csv">Télécharger CSV</button> -->
-        </div>
-        <div class="graphique-hum">
-        <canvas id="graphique-hum" height="220"></canvas>
-        </div>
-    </div>
-
-    <script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.3/dist/Chart.min.js"></script>
-    <script>
-        // Initialisation d'une variable pour stocker l'instance du graphique
-        let myChart = null;
-
-        // Fonction pour créer un graphique avec des données spécifiques
-        function createChart(url, borderWidth) {
-            fetch(url)
-                .then(response => response.json())
-                .then(data => {
-                    // Récupération des données
-                    const labels = data.temps.slice(-27); // Dernières 27 valeurs
-                    const dataValues = data.humidity.slice(-27);
-
-                    // Suppression du graphique précédent s'il existe
-                    if (myChart) {
-                        myChart.destroy();
-                    }
-
-                    // Création d'un nouveau graphique
-                    const ctx = document.getElementById('graphique-hum').getContext('2d');
-                    myChart = new Chart(ctx, {
-                        type: 'line',
-                        data: {
-                            labels: labels,
-                            datasets: [{
-                                label: 'Humidité (%)',
-                                data: dataValues,
-                                backgroundColor: 'rgba(0, 0, 255, 0.1)',
-                                borderColor: 'rgb(0, 0, 255)',
-                                borderWidth: borderWidth,
-                                pointStyle: 'circle',
-                                pointRadius: 3,
-                                pointBorderColor: 'black',
-                                pointBackgroundColor: 'white'
-                            }]
-                        },
-                        options: {
-                            responsive: true,
-                            maintainAspectRatio: false,
-                            scales: {
-                                yAxes: [{
-                                    ticks: {
-                                        beginAtZero: true,
-                                        min: 0,
-                                        max: 80,
-                                        callback: function(value) {
-                                            return value + '%'; // Affiche "%" sur l'axe des y
-                                        }
-                                    },
-                                    gridLines: {
-                                        color: 'rgba(200, 200, 200, 0.2)'
-                                    }
-                                }],
-                                xAxes: [{
-                                    ticks: {
-                                        autoSkip: true,
-                                        maxTicksLimit: 20,
-                                    },
-                                    gridLines: {
-                                        display: false
-                                    }
-                                }]
-                            },
-                            legend: {
-                                display: true,
-                                position: 'top'
-                            },
-                            tooltips: {
-                                enabled: true,
-                                mode: 'index',
-                                intersect: false
-                            }
-                        }
-                    });
-                })
-                .catch(error => console.error('Erreur lors du chargement des données :', error));
+    <style>
+        body {
+            width: 80%;
+            margin: 0 auto;
+            padding-top: 3cm;
+            font-family: 'Arial', sans-serif;
+            background-color: #f4f4f4;
         }
 
-        // Écouteurs d'événements pour les boutons
-        document.getElementById('aujourdhui-link').addEventListener('click', () => {
-            createChart('/chart-data-jour/', 1);
-        });
+        .card-body {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
 
-        document.getElementById('semaine-link').addEventListener('click', () => {
-            createChart('/chart-data-semaine/', 2);
-        });
+        #myAreaChart {
+            width: 100%;
+            height: 300px;  /* Adjust the height as needed */
+        }
+    </style>
+    <title>Humidity Chart</title>
+</head>
+<body>
+    <div class="card-body">
+        <canvas id="myAreaChart"></canvas>
+        <script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.3/dist/Chart.min.js"></script>
+    </div>
 
-        document.getElementById('mois-link').addEventListener('click', () => {
-            createChart('/chart-data-mois/', 3);
+    <script>
+        const dates = [{% for i in tab %} '{{i.dt}}', {% endfor %}];
+        const datas = [{% for i in tab %} '{{i.hum}}', {% endfor %}];
+        var ctx = document.getElementById('myAreaChart').getContext('2d');
+        var myChart = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: dates,
+                datasets: [{
+                    label: 'Humidity',
+                    data: datas,
+                    borderColor: 'rgba(0, 0, 255, 1)',  // Blue line color
+                    backgroundColor: 'rgb(0, 78, 222,0.2)',  // Blue fill color with opacity
+                    borderWidth: 2
+                }]
+            },
+            options: {
+                scales: {
+                    yAxes: [{
+                        ticks: {
+                            beginAtZero: true,
+                            fontColor: 'rgb(22, 17, 128)',  // Blue font color
+                            fontSize: 14,  // Adjust the font size for the vertical axis
+                            fontFamily: 'Arial',  // Adjust the font family for the vertical axis
+                            fontWeight: 900  // Add font weight
+                        },
+                        gridLines: {
+                            color: '#ddd'
+                        }
+                    }],
+                    xAxes: [{
+                        ticks: {
+                            fontColor: 'rgb(22, 17, 128)',  // Blue font color
+                            maxRotation: 45,  // Rotate the labels
+                            minRotation: 45,  // Rotate the labels
+                            autoSkip: true,
+                            maxTicksLimit: 10,  // Limit the number of visible ticks
+                            fontSize: 12,  // Adjust the font size for the horizontal axis
+                            fontFamily: 'Arial',  // Adjust the font family for the horizontal axis
+                            fontWeight: 'bold'  // Add font weight
+                        },
+                        gridLines: {
+                            color: '#ddd'
+                        }
+                    }]
+                },
+                legend: {
+                    labels: {
+                        fontColor: '#1E88E5',  // Blue font color
+                        fontSize: 14,  // Adjust the font size for the legend
+                        fontFamily: 'Arial',  // Adjust the font family for the legend
+                        fontWeight: 800  // Add font weight
+                    }
+                }
+            }
         });
-
-        // Charge initiale du graphique avec /chart-data/
-        createChart('/chart-data/', 4);
     </script>
-
-    {% endblock %}
-
-
 </body>
 </html>
+
+{% endblock index %}

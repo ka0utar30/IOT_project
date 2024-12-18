@@ -1,19 +1,27 @@
 from django.urls import path
 from . import views
 from . import api
+from django.contrib.auth import views as auth_views
+
 urlpatterns=[
-    path('', views.home ),
-    path('api',api.Dlist,name='json'),
-    path("api/post", api.Dlist, name='json'),
-    path('download_csv/', views.download_csv, name='download_csv'),
-    path('index/',views.table,name='table'),
-    path('myChart/',views.graphique,name='myChart'),
-    path('chart-temp/', views.my_chart_temp_view, name='myChartTemp'),
-    path('chart-hum/', views.my_chart_hum_view, name='myChartHum'),
-    path('chart-data/', views.chart_data, name='chart-data'),
-    path('chart-data-jour/', views.chart_data_jour, name='chart-data-jour'),
-    path('chart-data-semaine/', views.chart_data_semaine, name='chart-data-semaine'),
-    path('chart-data-mois/', views.chart_data_mois, name='chart-data-mois'),
-    path('home/', views.home, name='home'),
-    path('table/',views.table,name='table'),
+    path("api/",api.dhtser,name='json'),
+    path("api/post", api.dhtser, name='json'),
+
+    path('', views.login_user,name='login'),
+    path('logout', views.logout_user, name='logout'),
+    path('home',views.table,name='table'),
+
+    path('chartHum', views.chartHum, name='chartHum'),
+    path('chartTemp', views.chartTemp, name='chartTemp'),
+    path('chartHum_jour',views.chart_Hum_jour,name='chartHumJ'),
+    path('chartTemp_jour',views.chart_Temp_jour,name='chartTempJ'),
+    path('chartTemp_semaine',views.chart_Temp_semaine,name='chartTempS'),
+    path('chartHum_semaine',views.chart_Hum_semaine,name='chartHumS'),
+    path('chartTemp_mois',views.chart_Temp_mois,name='chartTempM'),
+    path('chartHum_mois',views.chart_Hum_mois,name='chartHumM'),
+
+    path('download_csv/', views.download_csv, name='csv'),
+    path('csv_semaine',views.csv_semaine,name='csvS'),
+    path('csv_mois',views.csv_mois,name='csvM'),
+    path('csv_jour',views.csv_jour,name='csvJ'),
 ]
