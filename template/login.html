@@ -8,8 +8,8 @@
     <style>
         h1 {
             text-align: center;
-            color: #333;
-            font-size: 50px; /* Ajustez la taille de la police selon vos préférences */
+            color: #000000;
+            font-size: 50px;
         }
 
         span {
@@ -20,18 +20,18 @@
             border: none;
             cursor: pointer;
             display: inline-block;
-  margin: 0 auto;
-  padding: 0.9rem 2.5rem;
-  text-align: center;
-  background-color: #002fa7;
-  color: #fff;
-  border-radius: 4px;
-  box-shadow: 0px 3px 6px rgba(0, 0, 0, 0.16);
-  font-size: 17px;
-  transition: background-color 0.3s ease;
+            margin: 0 auto;
+            padding: 0.9rem 2.5rem;
+            text-align: center;
+            background-color: #002fa7;
+            color: #fff;
+            border-radius: 4px;
+            box-shadow: 0px 7px 6px #062063a6;
+            font-size: 17px;
+            transition: background-color 0.3s ease;
         }
         form .btn:hover {
-              background-color: #0044cc;
+              background-color: #062063;
         }
     </style>
 </head>
@@ -43,10 +43,12 @@
         <h1>Weather<span>TRACK</span></h1>
 
         <div class="form-field">
+            <img src="{% static 'images/username.png' %}" alt="User Icon" class="icon">
             <input type="text" name="username" placeholder="Username" required/>
         </div>
 
         <div class="form-field">
+            <img src="{% static 'images/lock.png' %}" alt="Lock Icon" class="icon">
             <input type="password" name="password" placeholder="Password" required/>
         </div>
 
