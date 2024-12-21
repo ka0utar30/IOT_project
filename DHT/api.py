@@ -6,6 +6,8 @@ from rest_framework.response import Response
 from rest_framework import status
 from .models import Dht11
 from .serializers import DHT11serialize
+from twilio.rest import Client
+
 
 
 # Initialize a global counter variable
@@ -28,6 +30,18 @@ def dhtser(request):
             serial.save()
             derniere_temperature = Dht11.objects.last().temp
             print(derniere_temperature)
+            if derniere_temperature < 10 :
+                account_sid = 'AC6f00dec70c539346716f6913131abfea'
+                auth_token = '8059437daadbd9eb29e41fc190e21c5e'
+                client = Client(account_sid, auth_token)
+
+                message = client.messages.create(
+                    from_='whatsapp:+14155238886',
+                    body='ALERTE : La temperature sur votre capteur depasse le seuil.',
+                    to='whatsapp:+212680272781'
+                )
+
+                print(message.sid)
 
             return Response(serial.data, status=status.HTTP_201_CREATED)
         else:
