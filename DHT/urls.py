@@ -9,7 +9,8 @@ urlpatterns=[
 
     path('', views.login_user,name='login'),
     path('logout', views.logout_user, name='logout'),
-    path('home',views.table,name='table'),
+ #   path('home',views.table,name='table'),
+    path('home', views.home, name='home'),
 
     path('chartHum', views.chartHum, name='chartHum'),
     path('chartTemp', views.chartTemp, name='chartTemp'),
@@ -24,4 +25,7 @@ urlpatterns=[
     path('csv_semaine',views.csv_semaine,name='csvS'),
     path('csv_mois',views.csv_mois,name='csvM'),
     path('csv_jour',views.csv_jour,name='csvJ'),
+
+    path('gestion_incidents/', views.gestion, name='gestion_incidents'),
+    path('archive_incidents/', views.archive, name='archive_incidents'),
 ]

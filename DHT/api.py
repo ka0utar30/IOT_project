@@ -7,6 +7,7 @@ from rest_framework import status
 from .models import Dht11
 from .serializers import DHT11serialize
 from twilio.rest import Client
+from django.core.mail import send_mail
 
 
 
@@ -40,8 +41,15 @@ def dhtser(request):
                     body='ALERTE : La temperature sur votre capteur depasse le seuil.',
                     to='whatsapp:+212680272781'
                 )
-
                 print(message.sid)
+                ######
+                subject = 'Alerte DHT'
+                message = (f'Il y a une alerte importante sur votre Capteur, la température est: {Dht11.objects.last().temp} et dépasse le seuil.'
+                           f' Veuillez intervenir immédiatement pour vérifier et corriger cette situation.')
+                email_from = settings.EMAIL_HOST_USER
+                recipient_list = ['kaoutaraakki@gmail.com']
+                send_mail(subject, message, email_from, recipient_list)
+
 
             return Response(serial.data, status=status.HTTP_201_CREATED)
         else:

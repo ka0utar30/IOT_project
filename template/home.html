@@ -1,0 +1,79 @@
+{% load static %}
+
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{% static 'css/home.css' %}">
+    <title>Weather Dashboard</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;800&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- Navbar -->
+    {% include 'navbar.html' %}
+
+
+    <div class="background">
+        <!-- Main Transparent Container -->
+        <div class="main-container">
+            <!-- City and Date Section -->
+            <div class="firstsection">
+                <h1 class="name">Dashboard</h1>
+                <hr class="divider">
+            </div>
+
+            <div class="date-time-section">
+                <p class="date">{{ valeurs.current_date }}</p>
+                <p class="time">{{ valeurs.current_time }}</p>
+            </div>
+
+
+            <div class="container">
+                <!-- Temperature Box -->
+                <div class="temperature-box">
+                    <h2 class="box-title">Temperature :</h2>
+                    <hr class="box-divider">
+                    <p class="box-value">{{ valeurs.temp|floatformat:2 }} °C</p>
+                    <p class="box-timestamp">Il y a {{ valeurs.last_temp_time }} min</p>
+                    <p class="box-hi">Highest : {{ valeurs.temp_max|floatformat:2 }}°C</p>
+                    <p class="box-lo">Lowest : {{ valeurs.temp_min|floatformat:2 }}°C</p>
+                </div>
+
+                <!-- Humidity Box -->
+                <div class="humidity-box">
+                    <h2 class="box-title">Humidity :</h2>
+                    <hr class="box-divider">
+                    <p class="box-value">{{ valeurs.hum|floatformat:2 }} %</p>
+                    <p class="box-timestamp">Il y a {{ valeurs.last_hum_time }} min</p>
+                    <p class="box-hi">Highest : {{ valeurs.hum_max|floatformat:2 }}%</p>
+                    <p class="box-lo">Lowest : {{ valeurs.hum_min|floatformat:2 }}%</p>
+                </div>
+            </div>
+
+            <!-- Weekly Data Section -->
+            <hr class="big-divider">
+            <div class="weekly-section">
+                {% for day in weekly_data %}
+                <div class="day-box">
+                    <h2 class="day-title">{{ day.name }}</h2>
+                    <p class="info">Hi : {{ day.temp_high|floatformat:2 }}°C   {{ day.hum_high }}%</p>
+                    <p class="info">Lo : {{ day.temp_low|floatformat:2 }}°C   {{ day.hum_low }}%</p>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+
+</body>
+<script>
+    function updateTime() {
+        const now = new Date();
+        const time = now.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
+        document.querySelector('.time').innerText = time;
+    }
+
+    // Update time every second
+    setInterval(updateTime, 1000);
+</script>
+
+</html>

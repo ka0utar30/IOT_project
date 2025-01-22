@@ -14,45 +14,56 @@ text-decoration: none;}</style>
   <body>
   <header class="header">
     <div class="menu-bar">
-      <a href="home" class="marouane" ><h1 class="logo">Weather<span>TRACK</span></h1></a>
+      <a href="/home" class="marouane" ><h1 class="logo">Weather<span>TRACK</span></h1></a>
       <ul>
 
 
-        <li><a href="chartTemp">TEMPERATURE<i class="fas fa-caret-down"></i></a>
+        <li><a href="/chartTemp">TEMPERATURE<i class="fas fa-caret-down"></i></a>
 
             <div class="dropdown-menu">
                 <ul>
-                  <li><a href="chartTemp_jour">CHART JOUR</a></li>
-                  <li>   <a href="chartTemp_semaine">CHART SEMAINE</a></li>
-                  <li> <a href="chartTemp_mois">CHART MOIS</a></li>
+                  <li><a href="/chartTemp_jour">CHART JOUR</a></li>
+                  <li>   <a href="/chartTemp_semaine">CHART SEMAINE</a></li>
+                  <li> <a href="/chartTemp_mois">CHART MOIS</a></li>
                 </ul>
               </div>
         </li>
 
 
 
-        <li><a href="chartHum">HUMIDITE<i class="fas fa-caret-down"></i></a>
+        <li><a href="/chartHum">HUMIDITE<i class="fas fa-caret-down"></i></a>
 
           <div class="dropdown-menu">
               <ul>
-                <li><a href="chartHum_jour">CHART JOUR</a></li>
-                <li>   <a href="chartHum_semaine">CHART SEMAINE</a></li>
-                <li> <a href="chartHum_mois">CHART MOIS</a></li>
+                <li><a href="/chartHum_jour">CHART JOUR</a></li>
+                <li>   <a href="/chartHum_semaine">CHART SEMAINE</a></li>
+                <li> <a href="/chartHum_mois">CHART MOIS</a></li>
               </ul>
             </div>
       </li>
 
 
-        <li><a href="download_csv">telecharger CSV<i class="fas fa-caret-down"></i></a>
+        <li><a href="/download_csv">telecharger CSV<i class="fas fa-caret-down"></i></a>
 
           <div class="dropdown-menu">
               <ul>
-                <li><a href="csv_jour">DOWNLOAD CSV JOUR</a></li>
-                <li>   <a href="csv_semaine">DOWNLOAD CSV SSEMAINE</a></li>
-                <li> <a href="csv_mois">DOWNLOAD CSV  MOIS</a></li>
+                <li><a href="/csv_jour">DOWNLOAD CSV JOUR</a></li>
+                <li>   <a href="/csv_semaine">DOWNLOAD CSV SEMAINE</a></li>
+                <li> <a href="/csv_mois">DOWNLOAD CSV  MOIS</a></li>
               </ul>
             </div>
       </li>
+
+      <li>
+            <a href="/gestion_incidents">GESTION<i class="fas fa-caret-down"></i></a>
+            <div class="dropdown-menu">
+              <ul>
+                <li><a href="/gestion_incidents">INCIDENTS</a></li>
+                <li><a href="/archive_incidents">ARCHIVE DES INCIDENTS</a></li>
+              </ul>
+            </div>
+      </li>
+
         {% if user.is_authenticated %}
    <li><a href="{% url 'logout' %}">LOGOUT</a></li>
 {% endif %}
