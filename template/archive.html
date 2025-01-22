@@ -1,10 +1,47 @@
-<!DOCTYPE html>
+{% extends 'navbar.html' %}
+{% load static %}
+
+{% block index %}
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Archives</title>
+    <link rel="stylesheet" href="{% static 'css/archive.css' %}">
 </head>
 <body>
-
+    <main class="table">
+        <section class="table__header">
+            <h1>Table des archives</h1>
+        </section>
+        <section class="alert-text">
+            <p>Voici la liste des alertes résolues pour la période des 6 derniers mois.</p>
+        </section>
+        <section class="table__body">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Id <span class="icon-arrow">&UpArrow;</span></th>
+                        <th>Température <span class="icon-arrow">&UpArrow;</span></th>
+                        <th>Humidité <span class="icon-arrow">&UpArrow;</span></th>
+                        <th>Date <span class="icon-arrow">&UpArrow;</span></th>
+                        <th>Archivée à <span class="icon-arrow">&UpArrow;</span></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for archive in archives %}
+                    <tr>
+                        <td>{{ archive.id }}</td>
+                        <td>{{ archive.temp }} °C</td>
+                        <td>{{ archive.hum }} %</td>
+                        <td>{{ archive.date }} ; {{ archive.time }}</td>
+                        <td>{{ archive.archived_at }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </section>
+    </main>
 </body>
 </html>
+{% endblock index %}

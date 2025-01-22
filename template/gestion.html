@@ -80,7 +80,7 @@
             <h1>Table des Incidents</h1>
         </section>
         <section class="alert-text">
-        <p>Here you can find the current alerts, please treat them as soon as possible then mark them done.</p>
+        <p>Ici, vous pouvez consulter les alertes actuelles. Veuillez les traiter dès que possible, puis les marquer comme résolues.</p>
         </section>
         <section class="table__body">
             <table>
@@ -102,8 +102,12 @@
                         <td>{{ alert.date }} ; {{ alert.time }}</td>
                         <td>
                             <center>
-                                <input type="checkbox" id="switch" class="checkbox" {% if toggle_state %}checked{% endif %} />
-                                <label for="switch" class="toggle"></label>
+                                <form method="POST" action="{% url 'gestion_incidents' %}">
+                                    {% csrf_token %}
+                                    <input type="hidden" name="incident_id" value="{{ alert.id }}">
+                                    <input type="checkbox" id="switch_{{ alert.id }}" class="checkbox" onchange="this.form.submit()" />
+                                    <label for="switch_{{ alert.id }}" class="toggle"></label>
+                                </form>
                             </center>
                         </td>
                     </tr>
